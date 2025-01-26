@@ -69,17 +69,17 @@ const limiter = rateLimit({
 });
 app.use("/api", limiter);
 
-// Custom middleware: Example usage
-app.use((req, res, next) => {
-  req.requestTime = new Date().toISOString();
-  next();
-});
+// // Custom middleware: Example usage
+// app.use((req, res, next) => {
+//   req.requestTime = new Date().toISOString();
+//   next();
+// });
 
 // // Static file serving (if needed)
 // app.use(express.static(`${__dirname}/nft-data/img.cjs`));
 
 // Routes
-app.use("/api/v1/nft", nftRouter);
+// app.use("/api/v1/nft", nftRouter);
 // app.use("/api/v1/playlist", playlistRouter);
 // app.use("/api/v1/user", userRouter);
 

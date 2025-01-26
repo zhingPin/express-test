@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import app from "../apiContext/app";
+import app from "../apiContext/app.js";
 // const app = express();
 
 // Initialize dotenv in development mode
