@@ -28,46 +28,46 @@ import playlistRouter from "../apiContext/(routers)/playlistRouter.js";
 
 const app = express();
 
-// Middleware for CORS
-app.use(cors());
-app.options("*", cors());
+// // Middleware for CORS
+// app.use(cors());
+// app.options("*", cors());
 
-// Body parser: Limit request payload size
-app.use(express.json({ limit: "100kb" }));
+// // Body parser: Limit request payload size
+// app.use(express.json({ limit: "100kb" }));
 
-// Security Middleware
-app.use(helmet()); // Secure HTTP headers
-app.use(mongoSanitize()); // Prevent NoSQL injection attacks
-app.use(xssClean()); // Prevent XSS attacks
+// // Security Middleware
+// app.use(helmet()); // Secure HTTP headers
+// app.use(mongoSanitize()); // Prevent NoSQL injection attacks
+// app.use(xssClean()); // Prevent XSS attacks
 
-// Prevent parameter pollution
-app.use(
-  hpp({
-    whitelist: [
-      "duration",
-      "difficulty",
-      "maxGroupSize",
-      "price",
-      "ratingsAverage",
-      "ratingsQuantity",
-    ],
-  })
-);
+// // Prevent parameter pollution
+// app.use(
+//   hpp({
+//     whitelist: [
+//       "duration",
+//       "difficulty",
+//       "maxGroupSize",
+//       "price",
+//       "ratingsAverage",
+//       "ratingsQuantity",
+//     ],
+//   })
+// );
 
-// Development logging
-if (process.env.NODE_ENV === "development") {
-  app.use(morgan("dev"));
-}
+// // Development logging
+// if (process.env.NODE_ENV === "development") {
+//   app.use(morgan("dev"));
+// }
 
-// const client = new OpenAI();
+// // const client = new OpenAI();
 
-// Rate limiting
-const limiter = rateLimit({
-  max: 100, // Limit each IP to 100 requests per hour
-  windowMs: 60 * 60 * 1000,
-  message: "Too many requests from this IP, please try again in an hour.",
-});
-app.use("/api", limiter);
+// // Rate limiting
+// const limiter = rateLimit({
+//   max: 100, // Limit each IP to 100 requests per hour
+//   windowMs: 60 * 60 * 1000,
+//   message: "Too many requests from this IP, please try again in an hour.",
+// });
+// app.use("/api", limiter);
 
 // // Custom middleware: Example usage
 // app.use((req, res, next) => {
