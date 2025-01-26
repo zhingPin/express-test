@@ -8,7 +8,7 @@ const connectToDatabase = async () => {
       "Database connection string is not defined in the environment variables."
     );
   }
-  //fhj
+
   mongoose
     .connect(DB)
     .then(() => console.log("DB connection successful"))
