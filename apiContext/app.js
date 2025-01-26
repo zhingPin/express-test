@@ -80,8 +80,8 @@ app.use((req, res, next) => {
 
 // Routes
 app.use("/api/v1/nft", nftRouter);
-app.use("/api/v1/playlist", playlistRouter);
-app.use("/api/v1/user", userRouter);
+// app.use("/api/v1/playlist", playlistRouter);
+// app.use("/api/v1/user", userRouter);
 
 // Catch-all handler for undefined routes
 // app.all("*", (req, res, next) => {
