@@ -77,19 +77,19 @@ app.use((req, res, next) => {
 
 // // Static file serving (if needed)
 // app.use(express.static(`${__dirname}/nft-data/img.cjs`));
-notify;
+
 // Routes
 app.use("/api/v1/nft", nftRouter);
 app.use("/api/v1/playlist", playlistRouter);
 app.use("/api/v1/user", userRouter);
 
 // Catch-all handler for undefined routes
-app.all("*", (req, res, next) => {
-  next(new AppError(`Cannot find ${req.originalUrl} on this server`, 404));
-});
+// app.all("*", (req, res, next) => {
+//   next(new AppError(`Cannot find ${req.originalUrl} on this server`, 404));
+// });
 
-// Global error handler
-app.use(globalErrorHandler);
+// // Global error handler
+// app.use(globalErrorHandler);
 
 // Export the app
 export default app;
