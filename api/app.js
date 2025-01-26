@@ -22,9 +22,9 @@ import mongoSanitize from "express-mongo-sanitize";
 // import assistantRouter from "./src/shared/api/routers/assistantRouter.js";
 // import threadRouter from "./src/shared/api/routers/threadRouter.js";
 // import messageRouter from "./src/shared/api/routers/messageRouter.js";
-import userRouter from "./(routers)/userRouter.js";
-import nftRouter from "./(routers)/nftRouter.js";
-import playlistRouter from "./(routers)/playlistRouter.js";
+// import userRouter from "./(routers)/userRouter.js";
+// import nftRouter from "./(routers)/nftRouter.js";
+// import playlistRouter from "./(routers)/playlistRouter.js";
 
 // const app = express();
 
