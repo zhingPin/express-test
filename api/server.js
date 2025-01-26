@@ -1,4 +1,4 @@
-import { connectToDatabase } from "../utils/connectToDatabase";
+// import { connectToDatabase } from "../utils/connectToDatabase";
 import express from "express";
 
 const app = express();
