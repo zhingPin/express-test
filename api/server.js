@@ -18,11 +18,6 @@ mongoose
   .then(() => console.log("DB connection successful"))
   .catch((err) => console.error("DB connection failed:", err));
 
-// Routes
-// app.use("/api/v1/nft", nftRouter);
-// app.use("/api/v1/playlist", playlistRouter);
-// app.use("/api/v1/user", userRouter);
-
 // Basic route
 app.get("/", (req, res) => {
   res.send("Subscribe to jon dough");
