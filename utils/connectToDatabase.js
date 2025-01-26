@@ -9,10 +9,16 @@ const connectToDatabase = async () => {
     );
   }
 
-  mongoose
-    .connect(DB)
-    .then(() => console.log("DB connection successful"))
-    .catch((err) => console.error("DB connection failed:", err));
+  try {
+    await mongoose.connect(DB, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("DB connection successful");
+  } catch (err) {
+    console.error("DB connection failed:", err);
+    throw err; // Re-throw the error to prevent silent failures
+  }
 };
 
 export { connectToDatabase };
