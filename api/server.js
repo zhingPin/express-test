@@ -7,14 +7,14 @@ if (process.env.NODE_ENV !== "production") {
   dotenv.config({ path: "./config.env" });
 }
 
-const app = "../apiContext/app";
+const app = express();
 
 // Replace <PASSWORD> dynamically in the connection string
 const DB = process.env.DATABASE;
 
 // console;
 
-// Connect to MongoDB
+// // Connect to MongoDB
 mongoose
   .connect(DB, {})
   .then(() => console.log("DB connection successful"))
