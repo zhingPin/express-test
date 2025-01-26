@@ -1,32 +1,21 @@
-import express from "express";
-import dotenv from "dotenv";
 import mongoose from "mongoose";
 
-// Initialize dotenv in development mode
-if (process.env.NODE_ENV !== "production") {
-  dotenv.config({ path: "./config.env" });
-}
+const connectToDatabase = async () => {
+  const DB = process.env.DATABASE;
 
-const app = express();
+  if (!DB) {
+    throw new Error(
+      "Database connection string is not defined in the environment variables."
+    );
+  }
 
-// Replace <PASSWORD> dynamically in the connection string
-const DB = process.env.DATABASE;
+  try {
+    await mongoose.connect(DB, {});
+    console.log("DB connection successful");
+  } catch (err) {
+    console.error("DB connection failed:", err);
+    throw err; // Re-throw the error to prevent silent failures
+  }
+};
 
-// console;
-
-// // Connect to MongoDB
-// mongoose
-//   .connect(DB, {})
-//   .then(() => console.log("DB connection successful"))
-//   .catch((err) => console.error("DB connection failed:", err));
-
-// Basic route
-app.get("/", (req, res) => {
-  res.send("Subscribe to jon dough");
-});
-
-// Start the server
-const port = process.env.PORT || 8080;
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+export { connectToDatabase };
