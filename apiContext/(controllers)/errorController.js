@@ -1,4 +1,4 @@
-const AppError = require("../Utils/appError");
+import AppError from "../Utils/appError";
 
 const sendErrorDev = (err, res) => {
   console.log(err);
@@ -28,8 +28,6 @@ const sendErrorPro = (err, res) => {
 
 const handleCastError = (err) => {
   const message = `Invalid ${err.path}: ${err.value}`;
-  // console.log("castErr", err.statusCode); // This may not be necessary
-
   return new AppError(message, 400); // Set statusCode directly in the AppError constructor
 };
 
@@ -43,7 +41,7 @@ const handleDuplicateFieldsBD = (err) => {
 
 const handleValidationError = (err) => {
   const errors = Object.values(err.errors).map((el) => el.message);
-  const message = `Invald Data: ${errors.join(". ")}`;
+  const message = `Invalid Data: ${errors.join(". ")}`;
   return new AppError(message, 400);
 };
 
@@ -52,7 +50,7 @@ const handleJWTError = () => new AppError("Please sign in", 401);
 const handleJWTExpiredError = () =>
   new AppError("session expired, Please Login", 401);
 
-module.exports = (err, req, res, next) => {
+export default (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
   console.log("Error caught by global error handler"); // Log the error object
@@ -75,8 +73,6 @@ module.exports = (err, req, res, next) => {
     } else if (err.name === "TokenExpiredError") {
       error = handleJWTExpiredError();
     }
-
-    // console.log("Final error being sent to client:"); // Log the final error object being sent to the client
 
     if (error.message) {
       sendErrorPro(error, res);

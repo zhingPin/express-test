@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 // const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema({
@@ -124,4 +124,4 @@ userSchema.methods.fetchPlaylists = function () {
 //export User Schema
 const User = mongoose.model("User", userSchema);
 
-module.exports = User;
+export default User;

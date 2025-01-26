@@ -1,30 +1,30 @@
 //app.ts
-import dotenv from "dotenv";
+// import dotenv from "dotenv";
 // import { Request, Response, NextFunction } from "express";
 // import OpenAI from "openai";
 
-import xssClean from "xss-clean";
+// import xssClean from "xss-clean";
 
-import hpp from "hpp";
+// import hpp from "hpp";
 
 import express from "express";
-import cors from "cors";
-import morgan from "morgan";
-import rateLimit from "express-rate-limit";
-import helmet from "helmet";
-import mongoSanitize from "express-mongo-sanitize";
+// import cors from "cors";
+// import morgan from "morgan";
+// import rateLimit from "express-rate-limit";
+// import helmet from "helmet";
+// import mongoSanitize from "express-mongo-sanitize";
 
-// Utility imports
-import { globalErrorHandler } from "./(utils)/globalErrors.js";
-import AppError from "./(utils)/appError.js";
+// // Utility imports
+// import { globalErrorHandler } from "./(utils)/globalErrors.js";
+// import AppError from "./(utils)/appError.js";
 
 // // Router imports with explicit file extensions
 // import assistantRouter from "./src/shared/api/routers/assistantRouter.js";
 // import threadRouter from "./src/shared/api/routers/threadRouter.js";
 // import messageRouter from "./src/shared/api/routers/messageRouter.js";
-import userRouter from "../apiContext/(routers)/userRouter.js";
-import nftRouter from "../apiContext/(routers)/nftRouter.js";
-import playlistRouter from "../apiContext/(routers)/playlistRouter.js";
+// import userRouter from "../apiContext/(routers)/userRouter.js";
+// import nftRouter from "../apiContext/(routers)/nftRouter.js";
+// import playlistRouter from "../apiContext/(routers)/playlistRouter.js";
 
 const app = express();
 

@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
-//create nft Schema
+// Create NFT Schema
 const nftSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -24,50 +24,7 @@ const nftSchema = new mongoose.Schema({
   },
 });
 
-//export NFT Schema
+// Export NFT Schema
 const NFT = mongoose.model("NFT", nftSchema);
 
-module.exports = NFT;
-
-// image: {
-//   type: String,
-//   trim: true,
-// },
-// audio: {
-//   type: String,
-//   trim: true,
-// },
-// video: {
-//   type: String,
-//   trim: true,
-// },
-// creator: {
-//   type: String,
-//   trim: true,
-// },
-// // url: String,
-// description: {
-//   type: String,
-//   trim: true,
-// },
-
-// collection: {
-//   type: String,
-//   trim: true,
-// },
-
-// price,
-// tokenId: tokenId.toNumber(),
-// seller,
-// owner,
-// image,
-// video,
-// audio,
-// name,
-// description,
-// tokenURI,
-// creator,
-// website,
-// collection,
-// batchNumber: batchNumber.toNumber(),
-// batchSpecificId: batchSpecificId.toNumber(),
+export default NFT;
