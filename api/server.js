@@ -9,8 +9,8 @@ if (process.env.NODE_ENV !== "production") {
 
 const app = express();
 
-// Replace <PASSWORD> dynamically in the connection string
-const DB = process.env.DATABASE;
+// // Replace <PASSWORD> dynamically in the connection string
+// const DB = process.env.DATABASE;
 
 // console;
 
