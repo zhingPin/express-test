@@ -1,30 +1,30 @@
-// //app.ts
-// import "dotenv/config";
-// // import { Request, Response, NextFunction } from "express";
-// import OpenAI from "openai";
+//app.ts
+import "dotenv/config";
+// import { Request, Response, NextFunction } from "express";
+import OpenAI from "openai";
 
-// import xssClean from "xss-clean";
+import xssClean from "xss-clean";
 
-// import hpp from "hpp";
+import hpp from "hpp";
 
-// import express from "express";
-// import cors from "cors";
-// import morgan from "morgan";
-// import rateLimit from "express-rate-limit";
-// import helmet from "helmet";
-// import mongoSanitize from "express-mongo-sanitize";
+import express from "express";
+import cors from "cors";
+import morgan from "morgan";
+import rateLimit from "express-rate-limit";
+import helmet from "helmet";
+import mongoSanitize from "express-mongo-sanitize";
 
-// // Utility imports
-// import { globalErrorHandler } from "./(utils)/globalErrors.js";
-// import AppError from "./(utils)/appError.js";
+// Utility imports
+import { globalErrorHandler } from "./(utils)/globalErrors.js";
+import AppError from "./(utils)/appError.js";
 
-// // // Router imports with explicit file extensions
-// // import assistantRouter from "./src/shared/api/routers/assistantRouter.js";
-// // import threadRouter from "./src/shared/api/routers/threadRouter.js";
-// // import messageRouter from "./src/shared/api/routers/messageRouter.js";
-// import userRouter from "./(routers)/userRouter.js";
-// import nftRouter from "./(routers)/nftRouter.js";
-// import playlistRouter from "./(routers)/playlistRouter.js";
+// // Router imports with explicit file extensions
+// import assistantRouter from "./src/shared/api/routers/assistantRouter.js";
+// import threadRouter from "./src/shared/api/routers/threadRouter.js";
+// import messageRouter from "./src/shared/api/routers/messageRouter.js";
+import userRouter from "./(routers)/userRouter.js";
+import nftRouter from "./(routers)/nftRouter.js";
+import playlistRouter from "./(routers)/playlistRouter.js";
 
 // const app = express();
 
