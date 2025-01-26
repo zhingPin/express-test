@@ -10,10 +10,9 @@ if (process.env.NODE_ENV !== "production") {
 const app = express();
 
 // Replace <PASSWORD> dynamically in the connection string
-const DB = process.env.DATABASE.replace(
-  "<PASSWORD>",
-  process.env.DATABASE_PASSWORD
-);
+const DB = process.env.DATABASE;
+
+// console;
 
 // Connect to MongoDB
 mongoose
