@@ -1,5 +1,5 @@
 //app.ts
-import "dotenv/config";
+import dotenv from "dotenv";
 // import { Request, Response, NextFunction } from "express";
 // import OpenAI from "openai";
 
