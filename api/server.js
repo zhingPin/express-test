@@ -2,15 +2,15 @@ import express from "express";
 import dotenv from "dotenv";
 // import mongoose from "mongoose";
 
-// Initialize dotenv in development mode
-if (process.env.NODE_ENV !== "production") {
-  dotenv.config({ path: "./config.env" });
-}
+// // Initialize dotenv in development mode
+// if (process.env.NODE_ENV !== "production") {
+//   dotenv.config({ path: "./config.env" });
+// }
 
 const app = express();
 
-// Replace <PASSWORD> dynamically in the connection string
-const DB = process.env.DATABASE;
+// // Replace <PASSWORD> dynamically in the connection string
+// const DB = process.env.DATABASE;
 
 // console;
 
