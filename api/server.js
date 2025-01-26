@@ -19,9 +19,9 @@ mongoose
   .catch((err) => console.error("DB connection failed:", err));
 
 // Routes
-app.use("/api/v1/nft", nftRouter);
-app.use("/api/v1/playlist", playlistRouter);
-app.use("/api/v1/user", userRouter);
+// app.use("/api/v1/nft", nftRouter);
+// app.use("/api/v1/playlist", playlistRouter);
+// app.use("/api/v1/user", userRouter);
 
 // Basic route
 app.get("/", (req, res) => {
