@@ -1,8 +1,6 @@
 const express = require("express");
-const { connectToDatabase } = require("./utils/connectToDatabase");
+// const { connectToDatabase } = require("./utils/connectToDatabase");
 const app = express();
-
-connectToDatabase();
 
 const port = process.env.PORT || 8080;
 
