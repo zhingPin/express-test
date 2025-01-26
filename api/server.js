@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import mongoose from "mongoose";
+// import mongoose from "mongoose";
 
 // Initialize dotenv in development mode
 if (process.env.NODE_ENV !== "production") {
