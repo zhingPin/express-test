@@ -1,8 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import app from "../apiContext/app";
-// const app = express();
+// import app from "../apiContext/app";
+const app = express();
 
 // Initialize dotenv in development mode
 if (process.env.NODE_ENV !== "production") {
