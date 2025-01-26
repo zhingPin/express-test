@@ -15,8 +15,8 @@ import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
 
 // Utility imports
-import { globalErrorHandler } from "./(utils)/globalErrors.js";
-import AppError from "./(utils)/appError.js";
+// import { globalErrorHandler } from "./(utils)/globalErrors.js";
+// import AppError from "./(utils)/appError.js";
 
 // // Router imports with explicit file extensions
 // import assistantRouter from "./src/shared/api/routers/assistantRouter.js";
