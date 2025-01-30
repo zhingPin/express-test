@@ -7,6 +7,11 @@ import mongoSanitize from "express-mongo-sanitize";
 import hpp from "hpp";
 import AppError from "./api/utils/appError.js"; // Ensure correct relative path & file extension
 
+// // Router imports with explicit file extensions
+import assistantRouter from "./api/routers/assistantRouter.js";
+import threadRouter from "./api/routers/threadRouter.js";
+import messageRouter from "./api/routers/messageRouter.js";
+
 const app = express();
 // // Development logging
 // if (process.env.NODE_ENV === "development") {
@@ -52,8 +57,15 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(express.static("public")); // Serve static files from 'public' folder
+
+// Routes
+app.use("/api/v1/assistant", assistantRouter);
+app.use("/api/v1/thread", threadRouter);
+app.use("/api/v1/message", messageRouter);
+
 app.get("/", (req, res) => {
-  res.send("Welcome to the Express Server!");
+  res.send("Welcome my the Express Server!");
 });
 
 // Catch-all handler for undefined routes
