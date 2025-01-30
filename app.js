@@ -5,6 +5,7 @@ import cors from "cors";
 import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
 import hpp from "hpp";
+import AppError from "./api/utils/appError.js"; // Ensure correct relative path & file extension
 
 const app = express();
 // // Development logging
@@ -44,5 +45,20 @@ const limiter = rateLimit({
   message: "Too many requests from this IP, please try again in an hour.",
 });
 app.use("/api", limiter);
+
+// Custom middleware: Example usage
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
+
+app.get("/", (req, res) => {
+  res.send("Welcome to the Express Server!");
+});
+
+// Catch-all handler for undefined routes
+app.all("*", (req, res, next) => {
+  next(new AppError(`Cannot find ${req.originalUrl} on this server`, 404));
+});
 
 export default app;
