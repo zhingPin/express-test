@@ -3,7 +3,7 @@ import app from "./app.js";
 const port = process.env.PORT || 8080;
 
 app.get("/", (req, res) => {
-  res.send("Subscribe to don Nupane's channel");
+  res.send("Subscribe to gon Nupane's channel");
 });
 
 app.listen(port, () => {
