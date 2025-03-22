@@ -1,7 +1,6 @@
-import mongoose, { Schema } from "mongoose";
-import { connectToDatabase } from "../../utils/mongoDB.js";
-connectToDatabase();
-const MessageSchema = new Schema({
+import mongoose from "mongoose";
+
+const MessageSchema = new mongoose.Schema({
   threadId: {
     type: String,
     ref: "Thread",

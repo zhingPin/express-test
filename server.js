@@ -2,12 +2,29 @@ import express from "express";
 import "dotenv/config";
 
 import app from "./app.js";
-const port = process.env.PORT || 8080;
+import { connectToDatabase } from "./api/utils/connections/mongoDB.js";
+import { connectToOpenai } from "./api/utils/connections/openAIClient.js";
 
-app.get("/", (req, res) => {
-  res.send("Subscribe to gon Nupane's channel");
+process.on("uncaughtException", (err) => {
+  console.log("uncaughtException Safely Shutting Down Server");
+  console.log("error: ", err);
+
+  process.exit(1);
 });
 
-app.listen(port, () => {
-  `Server started on port ${port}`;
+connectToDatabase();
+connectToOpenai;
+console.log(process.env.NODE_ENV);
+
+const port = process.env.PORT || 8081;
+const server = app.listen(port, () => {
+  console.log(`Server running on port ${port}...`);
+});
+
+process.on("unhandledRejection", (err) => {
+  console.log("error name:", err.name);
+  console.log("error message:", err.message);
+  server.close(() => {
+    process.exit(1);
+  });
 });

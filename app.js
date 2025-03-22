@@ -6,17 +6,21 @@ import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
 import hpp from "hpp";
 import AppError from "./api/utils/appError.js"; // Ensure correct relative path & file extension
+import morgan from "morgan";
+import path from "path";
+import { fileURLToPath } from "url";
 
 // // Router imports with explicit file extensions
-import assistantRouter from "./api/routers/assistantRouter.js";
-import threadRouter from "./api/routers/threadRouter.js";
-import messageRouter from "./api/routers/messageRouter.js";
+import userRouter from "./api/routers/userRouter.js";
+import nftRouter from "./api/routers/nftRouter.js";
+import globalErrorHandler from "./api/controllers/errorControllers.js";
+// import assistantRouter from "./api/routers/assistantRouter.js";
+// import threadRouter from "./api/routers/threadRouter.js";
+// import messageRouter from "./api/routers/messageRouter.js";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-// // Development logging
-// if (process.env.NODE_ENV === "development") {
-//   app.use(morgan("dev"));
-// }
 
 app.use(cors());
 app.options("*", cors());
@@ -51,18 +55,26 @@ const limiter = rateLimit({
 });
 app.use("/api", limiter);
 
+// Static file serving
+app.use(express.static(path.join(__dirname, "public")));
+// app.use(morgan("dev")); // Logging middleware
+// Development logging
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
 // Custom middleware: Example usage
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
+  console.log("Hey i am from middleware function 👋");
   next();
 });
 
-app.use(express.static("public")); // Serve static files from 'public' folder
-
 // Routes
-app.use("/api/v1/assistant", assistantRouter);
-app.use("/api/v1/thread", threadRouter);
-app.use("/api/v1/message", messageRouter);
+app.use("/api/v1/users", userRouter);
+app.use("/api/v1/nfts", nftRouter);
+// app.use("/api/v1/assistant", assistantRouter);
+// app.use("/api/v1/thread", threadRouter);
+// app.use("/api/v1/message", messageRouter);
 
 app.get("/", (req, res) => {
   res.send("Welcome my the Express Server!");
@@ -72,5 +84,7 @@ app.get("/", (req, res) => {
 app.all("*", (req, res, next) => {
   next(new AppError(`Cannot find ${req.originalUrl} on this server`, 404));
 });
+
+app.use(globalErrorHandler);
 
 export default app;

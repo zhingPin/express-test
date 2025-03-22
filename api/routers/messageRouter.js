@@ -1,12 +1,7 @@
 // messageRouter.ts
 import { Router } from "express";
-import { getAllMessages, getMessage, createMessage, } from "../controllers/messageControllers.js";
-const messageController = {
-    getAllMessages,
-    getMessage,
-    createMessage,
-};
-// const messageController = require("../controllers/messageController");
+import { messageController } from "../controllers/messageControllers.js";
+
 const router = Router();
 // Get all messages
 router.route("/").get(messageController.getAllMessages);
