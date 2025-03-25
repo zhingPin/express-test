@@ -1,6 +1,8 @@
 import AppError from "../utils/appError.js";
 
 const sendErrorDev = (err, res) => {
+  console.error("ERROR 💥", err);
+
   res.status(err.statusCode).json({
     status: err.status,
     message: err.message,
@@ -30,9 +32,10 @@ const handleCastError = (err) => {
 };
 
 const handleDuplicateFieldsDB = (err) => {
-  const value = err.errmsg.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
-  const message = `Duplicate field values ${value}. Please use another key`;
-  return new AppError(message, 400);
+  const keyValue = err.message.match(/(["'])(?:(?=(\\?))\2.)*?\1/)[0];
+  const message = `${keyValue} already exists!`;
+  console.log(message);
+  return new AppError(message, 409); // Return the AppError object
 };
 
 const handleJWTError = () =>
@@ -44,7 +47,10 @@ const handleJWTExpiredError = () =>
 const handleValidationError = (err) => {
   const errors = Object.values(err.errors).map((el) => el.message);
   const message = `Invalid Data Input. ${errors.join(".")}`;
-  return new AppError(message, 400);
+  console.log(message);
+  const appError = new AppError(message, 409);
+  appError.code = err.code; // Copy the code property
+  return appError;
 };
 
 const globalErrorHandler = (err, req, res, next) => {
@@ -53,17 +59,23 @@ const globalErrorHandler = (err, req, res, next) => {
 
   if (process.env.NODE_ENV === "development") {
     sendErrorDev(err, res);
+    console.log("err.name", err.name);
   } else if (process.env.NODE_ENV === "production") {
-    let error = { ...err };
+    let error = Object.assign({}, err);
     error.message = err.message;
     error.name = err.name;
-    console.log("err.name", err.name);
+    error.statusCode = err.statusCode || 500;
+    error.status = err.status || "error";
+    console.log("err.code", error.name);
+
     if (error.name === "CastError") error = handleCastError(error);
     if (error.code === 11000) error = handleDuplicateFieldsDB(error);
     if (error.name === "ValidationError") error = handleValidationError(error);
     if (error.name === "JsonWebTokenError") error = handleJWTError();
     if (error.name === "TokenExpiredError") error = handleJWTExpiredError();
+
     sendErrorProd(error, res);
+    console.log("err.name", error.name);
   }
   next();
 };

@@ -16,6 +16,19 @@ const createNft = catchAsync(async (req, res, next) => {
   });
 });
 
+const getNft = catchAsync(async (req, res, next) => {
+  const nft = await NftModel.findById(req.params.id);
+  if (!nft) {
+    return next(new AppError("NFT ID does not exist", 404));
+  }
+  res.status(200).json({
+    status: "success",
+    data: {
+      nft,
+    },
+  });
+});
+
 const getAllNfts = catchAsync(async (req, res, next) => {
   console.log(req.query);
   const features = new APIFeatures(NftModel.find(), req.query)
@@ -38,19 +51,6 @@ const getAllNfts = catchAsync(async (req, res, next) => {
     results: nfts.length,
     data: {
       nfts,
-    },
-  });
-});
-
-const getNft = catchAsync(async (req, res, next) => {
-  const nft = await NftModel.findById(req.params.id);
-  if (!nft) {
-    return next(new AppError("NFT ID does not exist", 404));
-  }
-  res.status(200).json({
-    status: "success",
-    data: {
-      nft,
     },
   });
 });

@@ -14,7 +14,7 @@ import { fileURLToPath } from "url";
 import userRouter from "./api/routers/userRouter.js";
 import nftRouter from "./api/routers/nftRouter.js";
 import globalErrorHandler from "./api/controllers/errorControllers.js";
-// import assistantRouter from "./api/routers/assistantRouter.js";
+import assistantRouter from "./api/routers/assistantRouter.js";
 // import threadRouter from "./api/routers/threadRouter.js";
 // import messageRouter from "./api/routers/messageRouter.js";
 const __filename = fileURLToPath(import.meta.url);
@@ -72,7 +72,7 @@ app.use((req, res, next) => {
 // Routes
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/nfts", nftRouter);
-// app.use("/api/v1/assistant", assistantRouter);
+app.use("/api/v1/assistants", assistantRouter);
 // app.use("/api/v1/thread", threadRouter);
 // app.use("/api/v1/message", messageRouter);
 

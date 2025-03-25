@@ -31,10 +31,12 @@
     "mongoose": "^8.9.5",
     "ndb": "^1.1.5",
     "nodemailer": "^6.10.0",
+    "octokit": "^4.1.2",
     "openai": "^4.81.0",
     "slugify": "^1.6.6",
     "util": "^0.12.5",
-    "validator": "^13.12.0"
+    "validator": "^13.12.0",
+    "viem": "^2.23.14"
   },
   "devDependencies": {
     "cpx": "^1.5.0",

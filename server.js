@@ -1,4 +1,3 @@
-import express from "express";
 import "dotenv/config";
 
 import app from "./app.js";
@@ -7,7 +6,7 @@ import { connectToOpenai } from "./api/utils/connections/openAIClient.js";
 
 process.on("uncaughtException", (err) => {
   console.log("uncaughtException Safely Shutting Down Server");
-  console.log("error: ", err);
+  console.log(err);
 
   process.exit(1);
 });
