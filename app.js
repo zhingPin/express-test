@@ -47,6 +47,9 @@ app.use(express.json({ limit: "100kb" }));
 
 app.use(helmet()); // Secure HTTP headers
 
+// Enable trust for proxy headers (fix for express-rate-limit issue)
+app.set("trust proxy", 1); // ✅ Trust proxy (especially needed for deployments like Vercel, AWS, or Heroku)
+
 // Rate limiting
 const limiter = rateLimit({
   max: 1000, // Limit each IP to 100 requests per hour
