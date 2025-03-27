@@ -88,45 +88,31 @@ export const getThreadWithMessages = catchAsync(async (req, res, next) => {
     },
   });
 });
-export const getThreadByAssistantId = catchAsync(async (req, res, next) => {
-  const { assistantId } = req.params;
-  // Validate `assistantId`
-  validateId(assistantId, "Assistant ID");
-  // Fetch the thread by assistantId
-  const threadDoc = await ThreadModel.findOne({ assistantId }).exec();
-  if (!threadDoc) {
+
+export const getThreadsByAssistantId = catchAsync(async (req, res, next) => {
+  const assistant = await AssistantModel.findById(req.params.id);
+  if (!assistant) {
+    return next(new AppError(`Assistant not found`, 404));
+  }
+
+  // Fetch only the threads associated with the assistantId
+  const threads = await ThreadModel.find({ assistantId: assistant.id }).exec();
+
+  if (!threads.length) {
     return next(
-      new AppError(`No thread found for assistantId: ${assistantId}`, 404)
+      new AppError(`No threads found for assistantId: ${assistant.id}`, 404)
     );
   }
-  // Transform the thread
-  const thread = transformThread(threadDoc);
+
+  // Return only the threads (without messages)
   res.status(200).json({
     status: "success",
-    data: { thread },
+    data: { threads },
   });
 });
-// Create a new thread in DB (Helper function)
-export async function createThreadInDB(
-  assistantId,
-  threadId,
-  title = "Untitled Thread", // Default title
-  initialMessage = "" // Default initial message
-) {
-  try {
-    const newThread = new ThreadModel({
-      assistantId,
-      threadId, // Use the OpenAI thread ID
-      title,
-      initialMessage,
-      object: "thread",
-    });
-    console.log("Thread created in database:", newThread);
-    return await newThread.save();
-  } catch (error) {
-    console.error("Error creating thread in database:", error);
-    throw error;
-  }
-}
 
-export const threadController = { createThread, getThreadWithMessages };
+export const threadController = {
+  createThread,
+  getThreadWithMessages,
+  getThreadsByAssistantId,
+};

@@ -8,77 +8,6 @@ import { handleChat } from "../../ai/helpers/chatHandler.js";
 
 const client = new OpenAI();
 
-// Create a new message
-export const createMessage = catchAsync(async (req, res, next) => {
-  const thread = await ThreadModel.findById(req.params.id);
-  if (!thread) return next(new AppError("Thread not found", 404));
-
-  const threadId = thread.threadId;
-  const { sender, content } = req.body;
-
-  if (!content)
-    return next(new AppError("Message content cannot be empty", 400));
-
-  try {
-    // ✅ Check if there is an active run
-    let activeRun = await client.beta.threads.runs.list(threadId);
-    let ongoingRun = activeRun.data.find(
-      (run) => run.status === "in_progress" || run.status === "requires_action"
-    );
-
-    if (ongoingRun) {
-      return next(
-        new AppError(
-          "A run is still active. Please wait before sending another message.",
-          400
-        )
-      );
-    }
-
-    // ✅ Add user message after confirming no active runs
-    const message = await client.beta.threads.messages.create(threadId, {
-      role: "user",
-      content,
-    });
-
-    console.log("✅ Message created:", message);
-
-    // ✅ Start assistant run
-    console.log("🚀 Starting assistant run for thread:", threadId);
-    console.log("🤖 Using assistant ID:", thread.assistantId);
-
-    let run = await client.beta.threads.runs.create(threadId, {
-      assistant_id: thread.assistantId,
-    });
-
-    console.log("🟢 Run created with ID:", run.id);
-    console.log("⏳ Initial run status:", run.status);
-
-    while (run.status === "requires_action") {
-      run = await handleRunToolCalls(run, client, thread);
-    }
-
-    if (run.status === "failed") {
-      const errorMessage = `I encountered an error: ${
-        run.last_error?.message || "Unknown error"
-      }`;
-      console.error("❌ Run failed:", run.last_error);
-
-      await client.beta.threads.messages.create(threadId, {
-        role: "assistant",
-        content: errorMessage,
-      });
-      return next(new AppError(errorMessage, 500));
-    }
-
-    const newMessage = await saveMessage(threadId, sender, content);
-    res.status(201).json({ status: "success", data: { message: newMessage } });
-  } catch (error) {
-    console.error("❌ Error processing message:", error);
-    return next(new AppError("Failed to process message", 500));
-  }
-});
-
 // Controller function that handles creating messages and interacting with the chat logic
 export const createMessages = catchAsync(async (req, res, next) => {
   const thread = await ThreadModel.findById(req.params.id);
@@ -129,20 +58,25 @@ export const createMessages = catchAsync(async (req, res, next) => {
   }
 });
 
-// Function to save a message
-export async function saveMessage(threadId, sender, content) {
-  try {
-    const newMessage = new MessageModel({
-      threadId,
-      sender,
-      content,
-    });
-    return await newMessage.save();
-  } catch (error) {
-    console.error("Error saving message to database:", error);
-    throw error;
+export const getMessagesByThreadId = catchAsync(async (req, res, next) => {
+  const { thread } = await ThreadModel.findById(req.params.id);
+  // const nft = await NftModel.findById(req.params.id);
+  const threadId = thread.threadId;
+  // Find messages associated with the given threadId
+  const messages = await MessageModel.find({ threadId }).sort({ timestamp: 1 });
+
+  if (!messages.length) {
+    return next(
+      new AppError(`No messages found for threadId: ${threadId}`, 404)
+    );
   }
-}
+
+  res.status(200).json({
+    status: "success",
+    data: { messages },
+  });
+});
+
 // Get all messages
 export const getAllMessages = catchAsync(async (req, res, next) => {
   const messages = await MessageModel.find(); // Changed from Message to MessageModel
@@ -151,20 +85,6 @@ export const getAllMessages = catchAsync(async (req, res, next) => {
     results: messages.length,
     data: {
       messages,
-    },
-  });
-});
-// Get a single message by ID
-export const getMessage = catchAsync(async (req, res, next) => {
-  const { messageId } = req.params;
-  const message = await MessageModel.findById(messageId); // Changed from Message to MessageModel
-  if (!message) {
-    return next(new AppError("Message not found", 404));
-  }
-  res.status(200).json({
-    status: "success",
-    data: {
-      message,
     },
   });
 });
@@ -177,9 +97,8 @@ const checkStatus = (req, res, next) => {
 };
 
 export const messageController = {
-  createMessage,
   createMessages,
   getAllMessages,
-  getMessage,
   checkStatus,
+  getMessagesByThreadId,
 };

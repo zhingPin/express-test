@@ -5,6 +5,9 @@ import { threadController } from "../controllers/threadControllers.js";
 import { messageController } from "../controllers/messageControllers.js";
 const router = Router();
 
+// Get single assistants
+router.route("/:id").get(assistantController.getAssistant);
+
 // Get all assistants
 router
   .route("/")
@@ -14,19 +17,19 @@ router
 router
   .route("/:id/thread")
   .post(threadController.createThread)
-  .get(threadController.getThreadWithMessages);
+  .get(threadController.getThreadsByAssistantId);
 
-router
-  .route("/thread/:id/message")
-  .post(messageController.createMessage)
-  .get(threadController.getThreadWithMessages);
+// router
+//   .route("/thread/:id/message")
+//   .post(messageController.createMessage)
+//   .get(threadController.getThreadWithMessages);
 
 router
   .route("/thread/:id/messages")
   .post(messageController.createMessages)
   .get(threadController.getThreadWithMessages);
+// .get(messageController.getMessagesByThreadId);
 
-router.route("/:id").get(assistantController.getAssistant);
 //   .post(assistantController.createAssistants);
 // Get a specific assistant by ID
 // router.route("/:assistantId").get(assistantController.getAssistant);
