@@ -1,0 +1,279 @@
+const getThreadRunStatus2 = catchAsync(async (req, res, next) => {
+  const thread = await ThreadModel.findById(req.params.id);
+
+  if (!thread) {
+    return next(new AppError("Thread data not available", 400));
+  }
+
+  const threadId = thread.threadId;
+  const runId = thread.run?.id;
+
+  // Check if a run already exists
+  if (!runId) {
+    // res.status(200).json({
+    //   status: "success",
+    //   data: {
+    //     status: "no run id going to next",
+    //     thread,
+    //   },
+    // });
+    // ----------------------
+    req.thread = thread;
+
+    next();
+    //--------------------------
+  }
+
+  // Retrieve the latest run status
+  let latestRun = null;
+  if (runId) {
+    latestRun = await client.beta.threads.runs.retrieve(threadId, runId);
+  }
+
+  // Update the thread with the latest run data using `findByIdAndUpdate`
+  const updatedThread = await ThreadModel.findByIdAndUpdate(
+    req.params.id,
+    {
+      run: {
+        id: latestRun.id,
+        status: latestRun.status,
+      },
+    },
+    { new: true } // Ensures the returned thread is the updated one
+  );
+
+  // If the run status is "completed", retrieve and update assistant response
+  if (latestRun.status === "completed") {
+    console.log(
+      `✅ Run ${latestRun.id} completed. Checking assistant response...`
+    );
+
+    // Retrieve the assistant's messages
+    const messages = await client.beta.threads.messages.list(thread.threadId);
+
+    // Use `findByIdAndUpdate` to update the assistant response directly
+    const finalUpdatedThread = await ThreadModel.findByIdAndUpdate(
+      req.params.id,
+      {
+        assistantResponse: messages, // Update the assistant's messages
+      },
+      { new: true } // Ensure the updated thread is returned
+    );
+
+    console.log("💬 Assistant messages saved:", messages);
+    req.thread = finalUpdatedThread; // Attach the final updated thread to the request
+  }
+
+  if (!updatedThread) {
+    return next(new AppError("Could not get run status", 400));
+  }
+
+  req.thread = updatedThread;
+  // res.status(200).json({
+  //   status: "success",
+  //   data: {
+  //     status: "thread run updated",
+  //     updatedThread,
+  //   },
+  // });
+  next();
+});
+
+const createMessage2 = catchAsync(async (req, res, next) => {
+  const { content, sender } = req.body;
+  const thread = await ThreadModel.findById(req.params.id);
+  // Ensure req.thread is defined
+  if (!thread) {
+    return next(new AppError("Thread data is missing", 400));
+  }
+
+  if (thread.run.status === "requires_action") {
+    console.log("cr thread", thread.run.status);
+
+    console.log("⚡ Run requires action, handling tool calls...");
+    req.thread = thread;
+    // return res.status(200).json({
+    //   status: "success",
+    //   data: {
+    //     status: "thread run updated",
+    //     thread,
+    //   },
+    // });
+    next();
+  }
+  if (thread.run.status === "in_progress" || thread.run.status === "queued") {
+    console.log(
+      `🔄 Existing run (${thread.run.status}), waiting for completion going to next... `
+    );
+    res.status(201).json({
+      status: "success",
+      data: {
+        thread,
+      },
+      message: `Existing run (${thread.run.status}), waiting for completion...`,
+    });
+  }
+
+  if (
+    !thread.run ||
+    thread.run.status === "complete" ||
+    thread.run.status === "failed" ||
+    thread.run.status === "expired"
+  ) {
+    // Send message to OpenAI
+    await client.beta.threads.messages.create(thread.threadId, {
+      role: "user",
+      content: content,
+    });
+
+    const newMessage = await MessageModel.create({
+      threadId: thread._id, // Assuming req.thread has _id
+      content,
+      sender,
+    });
+
+    if (!newMessage) {
+      return next(new AppError("Error creating Message", 400));
+    }
+    req.thread = thread;
+    req.newMessage = newMessage;
+    // res.status(201).json({
+    //   status: "success",
+    //   data: {
+    //     newMessage,
+    //     thread,
+    //   },
+    //   message: "new message created"
+    // });
+    next();
+  }
+
+  // return next(new AppError("Thread is not in a valid state", 400));
+});
+
+const createRun2 = catchAsync(async (req, res, next) => {
+  const thread = await ThreadModel.findById(req.params.id);
+  const message = req.message;
+  if (!thread) {
+    return next(new AppError("Thread data is missing", 400));
+  }
+
+  // Check if there's already an active run
+  if (
+    thread.run &&
+    (thread.run.status === "in_progress" ||
+      thread.run.status === "queued" ||
+      thread.run.status === "requires_action")
+  ) {
+    console.log(
+      `🔄 Run already in progress (${thread.run.status}), skipping run creation.`
+    );
+    req.thread = thread;
+    // return res.status(201).json({
+    //   status: "success",
+    //   data: {
+    //     thread,
+    //   },
+    //   message: "Run is active going to next",
+    // });
+    return next();
+  }
+
+  // 🔥 Create a new run
+  console.log("🚀 Creating a new run...");
+  const newRun = await client.beta.threads.runs.create(thread.threadId, {
+    assistant_id: thread.assistantId, // Make sure to have this in your .env
+  });
+
+  // Update the database with new run details
+  const updatedThread = await ThreadModel.findByIdAndUpdate(
+    thread._id,
+    {
+      run: {
+        id: newRun.id,
+        status: newRun.status,
+      },
+    },
+    { new: true }
+  );
+
+  if (!updatedThread) {
+    return next(new AppError("Failed to update thread with new run", 500));
+  }
+
+  // Attach updated thread with new run data to req.thread
+  req.thread = updatedThread;
+
+  console.log(`✅ New run created: ${newRun.id} (status: ${newRun.status})`);
+
+  return res.status(201).json({
+    status: "success",
+    data: {
+      updatedThread,
+    },
+    message: "new run created",
+  });
+  // next(); // Move to next middleware
+});
+
+const performRun2 = catchAsync(async (req, res, next) => {
+  const thread = await ThreadModel.findById(req.params.id);
+  // console.log("pr thread", thread.run.status);
+
+  if (!thread || !thread.run || !thread.run.id) {
+    return next(new AppError("Run data is missing", 400));
+  }
+
+  const run = thread.run; // Latest run status is already in req.thread
+
+  // ⚡ Handle "requires_action"
+  if (run.status === "requires_action") {
+    console.log("⚡ Run requires action, handling tool calls...");
+    console.log("pr thread", thread.run.status);
+
+    // Process tool calls and update the run status
+    req.run = await handleRunToolCalls(run, client, thread);
+    console.log("pr thread", thread.run.status);
+
+    return res.status(200).json({
+      status: "success",
+      data: {
+        run: req.run,
+        required_action: req.run.required_action,
+        message: "run complete",
+      },
+    });
+  }
+
+  // ⏳ If still in progress or queued
+  if (run.status === "in_progress" || run.status === "queued") {
+    console.log(
+      `⏳ Run still in progress (${run.status}), polling will continue...`
+    );
+    res.status(200).json({
+      status: "success",
+      data: {
+        run,
+        runStatus: run.status,
+      },
+      message: `Run is still ${run.status}, waiting for completion...`,
+    });
+  }
+
+  // // ✅ Run completed
+  // if (run.status === "completed") {
+  //   console.log(`✅ Run completed: ${run.id}`);
+  //   return res.status(200).json({
+  //     status: "success",
+  //     data: {
+  //       run,
+  //     },
+  //   });
+  // }
+
+  // // ❌ Unexpected status
+  // console.log(`❌ Unexpected run status: ${run.status}`);
+  // return next(
+  //   new AppError(`Run is in an unexpected state: ${run.status}`, 400)
+  // );
+});

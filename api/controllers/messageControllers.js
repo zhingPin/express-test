@@ -9,7 +9,7 @@ import { handleChat } from "../../ai/helpers/chatHandler.js";
 const client = new OpenAI();
 
 // Controller function that handles creating messages and interacting with the chat logic
-export const createMessages = catchAsync(async (req, res, next) => {
+const createMessages = catchAsync(async (req, res, next) => {
   const thread = await ThreadModel.findById(req.params.id);
   if (!thread) {
     return next(new AppError("Thread not found", 404));
@@ -53,12 +53,42 @@ export const createMessages = catchAsync(async (req, res, next) => {
   } catch (error) {
     console.error("Error during chat:", error);
     return next(
-      new AppError("An error occurred while processing the message", 500)
+      new AppError("An error occurred while processing the message", 400)
     );
   }
 });
 
-export const getMessagesByThreadId = catchAsync(async (req, res, next) => {
+const getResponse = catchAsync(async (req, res, next) => {
+  const { run, assistantResponse } = await req.body;
+  if (!run.status === "failed") {
+    res.status(201).json({
+      status: "success",
+      data: {
+        run: run,
+        assistantResponse,
+      },
+    });
+    next();
+  }
+
+  // Save assistant response
+  const assistantMessage = new MessageModel({
+    threadId: thread.threadId,
+    sender: "assistant",
+    content: assistantResponse,
+    timestamp: new Date(),
+  });
+  await assistantMessage.save();
+
+  return res.status(200).json({
+    status: "success",
+    data: {
+      message: assistantResponse,
+    },
+  });
+});
+
+const getMessagesByThreadId = catchAsync(async (req, res, next) => {
   const { thread } = await ThreadModel.findById(req.params.id);
   // const nft = await NftModel.findById(req.params.id);
   const threadId = thread.threadId;
@@ -78,7 +108,7 @@ export const getMessagesByThreadId = catchAsync(async (req, res, next) => {
 });
 
 // Get all messages
-export const getAllMessages = catchAsync(async (req, res, next) => {
+const getAllMessages = catchAsync(async (req, res, next) => {
   const messages = await MessageModel.find(); // Changed from Message to MessageModel
   res.status(200).json({
     status: "success",

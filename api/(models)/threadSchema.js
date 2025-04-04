@@ -41,6 +41,8 @@ const ThreadSchema = new mongoose.Schema(
         ],
         // required: true,
       },
+      required_action: { type: String },
+      last_error: { type: String },
     },
   },
   { timestamps: true }
