@@ -9,11 +9,6 @@ import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
 import path from "path";
 import { fileURLToPath } from "url";
-// ROUTES
-import assistantRouter from "./api/aiAssistant/routes/assistantRouter.js";
-import threadRouter from "./api/aiAssistant/routes/threadRouter.js";
-import messageRouter from "./api/aiAssistant/routes/messageRouter.js";
-import chatRouter from "./api/aiAssistant/routes/chatRouter.js";
 // ERROR HANDLER
 import AppError from "./api/helpers/appError.js";
 import { globalErrorHandler } from "./api/helpers/globalErrorHandler.js";
@@ -28,14 +23,14 @@ app.use(cors());
 app.options("*", cors());
 app.use(mongoSanitize()); // Prevent NoSQL injection attacks
 app.post("/submit", [body("input").trim().escape()], // Use an array for middleware
-(req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        res.status(400).json({ errors: errors.array() });
-        return; // Ensure function execution stops here
-    }
-    res.send("Data is clean");
-});
+    (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.status(400).json({ errors: errors.array() });
+            return; // Ensure function execution stops here
+        }
+        res.send("Data is clean");
+    });
 app.use(hpp({
     whitelist: [],
 }));
@@ -58,15 +53,24 @@ app.use((req, res, next) => {
 });
 // Static file serving
 app.use(express.static(path.join(__dirname, "public")));
-app.use(morgan("dev")); // Logging middleware
+// Static file serving
+app.use(express.static(path.join(__dirname, "public")));
+// app.use(morgan("dev")); // Logging middleware
+// Development logging
+if (process.env.NODE_ENV === "development") {
+    app.use(morgan("dev"));
+}
 app.get("/docs", (req, res) => {
     res.send("Documentation.");
 });
-app.use("/api/v1/assistants", assistantRouter);
-app.use("/api/v1/thread", threadRouter);
-app.use("/api/v1/message", messageRouter);
-app.use("/api/v1/chat", chatRouter);
+// app.use("/api/v1/assistants", assistantRouter);
+// app.use("/api/v1/thread", threadRouter);
+// app.use("/api/v1/message", messageRouter);
+// app.use("/api/v1/chat", chatRouter);
 // app.use("/api/v1/health-check", healthCheckRouter);
+app.get("/", (req, res) => {
+    res.send("Welcome my the Express Server!");
+});
 // Catch-all handler for undefined routes
 app.all("*", (req, res, next) => {
     next(new AppError(`Cannot find ${req.originalUrl} on this server`, 404));
