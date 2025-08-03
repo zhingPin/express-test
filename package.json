@@ -6,9 +6,9 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "node server",
-    "start:dev": "nodemon server.js",
-    "start-ts:dev": "tsc && nodemon src/server.js",
+    "start": "nodemon dist/server.js",
+    "start:dev": "tsc && nodemon dist/server.js",
+    "start-ts:dev": "tsc && nodemon dist/server.js",
     "start:prod": "NODE_ENV=production nodemon server.js",
     "debug": "ndb server.js"
   },
@@ -32,6 +32,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.9.5",
     "ndb": "^1.1.5",
+    "next": "^15.1.6",
     "nodemailer": "^6.10.0",
     "octokit": "^4.1.2",
     "openai": "^4.81.0",
@@ -39,6 +40,7 @@
     "util": "^0.12.5",
     "validator": "^13.12.0",
     "viem": "^2.23.14"
+    
   },
   "devDependencies": {
     "@types/hpp": "^0.2.6",
