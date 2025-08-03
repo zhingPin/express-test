@@ -6,10 +6,10 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "node server",
-    "start:dev": "nodemon server.js",
+    "start": "node dist/server.js",
+    "start:dev": "nodemon dist/server.js",
     "start-ts:dev": "tsc && nodemon dist/server.js",
-    "start:prod": "NODE_ENV=production nodemon server.js",
+    "start:prod": "NODE_ENV=production nodemon dist/server.js",
     "debug": "ndb server.js"
   },
   "keywords": [
