@@ -29,20 +29,22 @@ const ThreadSchema = new mongoose.Schema(
       status: {
         type: String,
         enum: [
-          "queued",
-          "in_progress",
-          "requires_action",
-          "cancelling",
-          "cancelled",
-          "failed",
-          "completed",
-          "incomplete",
-          "expired",
+          "queued",// Run is stopped at getstatus
+          "in_progress",// Run is stopped at getstatus
+          "requires_action",// Run is performed
+          "cancelling",// Run is stopped at getstatus
+          "cancelled",// Run is run again
+          "failed",// Run is run again
+          "completed",// Run waits for hasResponse
+          "incomplete",// Run is stopped at getstatus
+          "expired",// Run is run again
         ],
         // required: true,
       },
       required_action: { type: String },
       last_error: { type: String },
+      hasResponse: { type: Boolean, default: false },
+
     },
   },
   { timestamps: true }

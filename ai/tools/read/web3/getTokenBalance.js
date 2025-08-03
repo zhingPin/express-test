@@ -1,8 +1,8 @@
 import { formatUnits } from "viem";
-import { ERC20_ABI } from "../../const/contractDetails.js";
-import { getPublicClient } from "../../wallet/viem/helpers/viemUtils.js";
+import { ERC20_ABI } from "../../../const/contractDetails.js";
+import { getPublicClient } from "../../../wallet/viem/helpers/viemUtils.js";
 
-import { readContract } from "./readContract.js"; // Ensure readContract is correctly imported
+import { readContract } from "../../read/readContract.js"; // Ensure readContract is correctly imported
 export const getTokenBalanceTool = {
   definition: {
     type: "function",

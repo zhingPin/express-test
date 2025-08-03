@@ -10,6 +10,18 @@ const MessageSchema = new mongoose.Schema({
         value: mongoose.Schema.Types.Mixed, // Ensure it supports objects
         annotations: { type: Array, default: [] }, // Optional annotations
       },
+      chunkedContent: {
+        type: [
+          {
+            type: { type: String, default: "text" },
+            value: String,
+          }
+        ],
+        default: [],
+      },
+      isStreaming: { type: Boolean, default: false },
+      streamCompleted: { type: Boolean, default: false },
+
       image: {
         url: { type: String, required: false }, // For image messages
         alt: { type: String, required: false },

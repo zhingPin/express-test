@@ -1,4 +1,4 @@
-import { createViemWalletClient } from "../../wallet/viem/createViemWalletClient.js";
+import { createViemWalletClient } from "../../../wallet/viem/createViemWalletClient.js";
 export const getWalletAddressTool = {
   definition: {
     type: "function",

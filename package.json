@@ -2,12 +2,13 @@
   "name": "express-test",
   "version": "1.0.0",
   "description": "building express server",
-  "main": "server.js",
+  "main": "src/server.ts",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
     "start": "node server",
     "start:dev": "nodemon server.js",
+    "start-ts:dev": "tsc && nodemon dist/server.js",
     "start:prod": "NODE_ENV=production nodemon server.js",
     "debug": "ndb server.js"
   },
@@ -18,6 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^3.0.2",
+    "binance-api-node": "^0.12.9",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "express": "^4.21.2",
@@ -39,9 +41,14 @@
     "viem": "^2.23.14"
   },
   "devDependencies": {
+    "@types/hpp": "^0.2.6",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^24.0.15",
     "cpx": "^1.5.0",
     "dotenv": "^16.4.7",
     "morgan": "^1.10.0",
-    "nodemon": "^3.1.9"
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5"
   }
 }

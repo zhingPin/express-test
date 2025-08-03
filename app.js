@@ -15,8 +15,8 @@ import userRouter from "./api/routers/userRouter.js";
 import nftRouter from "./api/routers/nftRouter.js";
 import globalErrorHandler from "./api/controllers/errorControllers.js";
 import assistantRouter from "./api/routers/assistantRouter.js";
-// import threadRouter from "./api/routers/threadRouter.js";
-// import messageRouter from "./api/routers/messageRouter.js";
+import createRunRouter from "./api/routers/newRunControllers/createRunRouter.js"
+import getRunRouter from "./api/routers/newRunControllers/getRunRouter.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -52,7 +52,7 @@ app.set("trust proxy", 1); // ✅ Trust proxy (especially needed for deployments
 
 // Rate limiting
 const limiter = rateLimit({
-  max: 1000, // Limit each IP to 100 requests per hour
+  max: 1000, // Limit each IP to 1000 requests per hour
   windowMs: 60 * 60 * 1000,
   message: "Too many requests from this IP, please try again in an hour.",
 });
@@ -76,8 +76,7 @@ app.use((req, res, next) => {
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/nfts", nftRouter);
 app.use("/api/v1/assistants", assistantRouter);
-// app.use("/api/v1/thread", threadRouter);
-// app.use("/api/v1/message", messageRouter);
+app.use("/api/v1/runs", createRunRouter, getRunRouter);
 
 app.get("/", (req, res) => {
   res.send("Welcome my the Express Server!");
@@ -87,6 +86,7 @@ app.get("/", (req, res) => {
 app.all("*", (req, res, next) => {
   next(new AppError(`Cannot find ${req.originalUrl} on this server`, 404));
 });
+
 
 app.use(globalErrorHandler);
 

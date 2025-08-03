@@ -4,7 +4,7 @@ const assistantSchema = new mongoose.Schema(
   {
     id: { type: String, required: true, unique: true, index: true },
     object: { type: String, default: "agent" },
-    created_at: { type: Number, required: true },
+    // created_at: { type: Number, required: true },
     name: { type: String, required: true },
     description: { type: String },
     model: { type: String, required: true },

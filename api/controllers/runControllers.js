@@ -197,9 +197,8 @@ const getRunResponse = catchAsync(async (req, res, next) => {
   }
 
   if (run.status === "failed") {
-    const errorMessage = `I encountered an error: ${
-      run.last_error?.message || "Unknown error"
-    }`;
+    const errorMessage = `I encountered an error: ${run.last_error?.message || "Unknown error"
+      }`;
     console.error("Run failed:", run.last_error);
 
     await client.beta.threads.messages.create(thread.threadId, {
@@ -241,13 +240,3 @@ export const runControllers = {
   performRun,
   getRunResponse,
 };
-
-// router
-//   .route("/example-route")
-//   .get(
-//     getThreadRunStatus,
-//     createMessage,
-//     createRun,
-//     performRun,
-//     getRunResponse
-//   );

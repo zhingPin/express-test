@@ -2,7 +2,6 @@ import AppError from "../utils/appError.js";
 import {
   transformThread,
   transformMessage,
-  validateId,
 } from "../utils/helpers/transformData.js";
 import { catchAsync } from "../utils/catchAsync.js";
 import { ThreadModel } from "../(models)/threadSchema.js";

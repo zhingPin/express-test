@@ -1,0 +1,24 @@
+import { ToolConfig } from "../../../../types/toolConfig.js";
+import { viemChains } from "../../../../utils/clients/web3/viem/viemChains.js";
+
+
+// Tool to fetch available chains
+export const getAvailableChainsTool: ToolConfig = {
+  definition: {
+    type: "function",
+    function: {
+      name: "get_available_chains",
+      description: "A list of the only available chains",
+      parameters: {
+        type: "object",
+        properties: {},
+        required: [],
+      },
+    },
+  },
+  handler: async () => {
+    // Get the keys of available chains from the viemChains configuration
+    const availableNetworks = Object.keys(viemChains);
+    return availableNetworks; // Return the list of available chains
+  },
+};

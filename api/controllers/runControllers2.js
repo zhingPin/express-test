@@ -58,6 +58,7 @@ const getThreadRunStatus2 = catchAsync(async (req, res, next) => {
   req.thread = updatedThread;
   next();
 });
+
 const getAssistantResponse2 = catchAsync(async (req, res, next) => {
   console.log("🔍 getAssistantResponse2 called");
   // const { threadId, run } = req.thread;
@@ -68,11 +69,11 @@ const getAssistantResponse2 = catchAsync(async (req, res, next) => {
       run.status !== "expired" &&
       run.status !== "failed")
   ) {
-    console.log("⏳ Assistant response is still pending. Returning 202...");
-    // return res
-    //   .status(202)
-    //   .json({ status: "success", message: "Run still in progress" });
-    return next();
+    console.log("⏳ Assistant response is still pending. Returning 202... , run.status:", run.status);
+    return res
+      .status(202)
+      .json({ status: "success", message: "Run still in progress" });
+    // return next();
   }
 
   if (run.status === "failed" || run.status === "expired") {
@@ -142,13 +143,6 @@ const getAssistantResponse2 = catchAsync(async (req, res, next) => {
   if (!assistantMessage) {
     return next(new AppError("❌ No assistant response found.", 400));
   }
-  // if (!assistantMessage) {
-  //   console.log("❌ No assistant response found.");
-  //   return res
-  //     .status(404)
-  //     .json({ status: "error", message: "No assistant response found." });
-  // }
-  // Debug: Log the assistant message content
   console.log("Assistant message content:", assistantMessage.content);
 
   // Convert response into the expected schema format
@@ -369,70 +363,6 @@ const performRun2 = catchAsync(async (req, res, next) => {
       message: `Run is still ${run.status}, waiting for completion...`,
     });
   }
-});
-const checkRunStatus = catchAsync(async (req, res, next) => {
-  const { threadId, runId } = req.params;
-
-  if (!threadId || !runId) {
-    return next(new AppError("Thread ID and Run ID are required", 400));
-  }
-
-  const run = await client.beta.threads.runs.retrieve(threadId, runId);
-
-  if (!run) {
-    return next(new AppError("Run not found", 404));
-  }
-
-  // ✅ If run is completed, fetch messages
-  if (run.status === "completed") {
-    console.log(`✅ Run ${run.id} completed. Fetching assistant response...`);
-
-    const messages = await client.beta.threads.messages.list(threadId);
-
-    return res.status(200).json({
-      status: "success",
-      data: {
-        run,
-        messages,
-      },
-    });
-  }
-
-  // ⏳ If still in progress, return current status
-  return res.status(200).json({
-    status: "pending",
-    data: {
-      runStatus: run.status, // Still "in_progress" or "queued"
-    },
-  });
-});
-
-const setRunStatusExpired = catchAsync(async (req, res, next) => {
-  // Update the run.id and run.status directly using findByIdAndUpdate
-  const updatedThread = await ThreadModel.findByIdAndUpdate(
-    req.params.id,
-    {
-      run: {
-        id: "run_Aj1kG5a9XH9APXJDre0dfwgx", // Set the run.id
-        status: "expired", // Set the run.status to expired
-      },
-    },
-
-    { new: true } // This option ensures that the updated document is returned
-  );
-
-  // Check if the thread exists after the update
-  if (!updatedThread) {
-    return next(new AppError("Thread not found", 404));
-  }
-
-  // Send the response back with the updated thread data
-  res.status(200).json({
-    status: "success",
-    data: {
-      run: updatedThread.run, // Send back the updated run data
-    },
-  });
 });
 
 export const runControllers2 = {
