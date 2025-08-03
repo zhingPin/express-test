@@ -2,7 +2,7 @@
   "name": "express-test",
   "version": "1.0.0",
   "description": "building express server",
-  "main": "src/server.ts",
+  "main": "dist/server.ts",
   "type": "module",
   "scripts": {
     "build": "tsc",
