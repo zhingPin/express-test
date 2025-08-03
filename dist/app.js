@@ -56,8 +56,7 @@ app.use((req, res, next) => {
     console.log("Hey i am from middleware function 👋");
     next();
 });
-// Static file serving
-app.use(express.static(path.join(__dirname, "public")));
+
 // Static file serving
 app.use(express.static(path.join(__dirname, "public")));
 // app.use(morgan("dev")); // Logging middleware
@@ -73,9 +72,9 @@ app.use("/api/v1/thread", threadRouter);
 app.use("/api/v1/message", messageRouter);
 app.use("/api/v1/chat", chatRouter);
 // app.use("/api/v1/health-check", healthCheckRouter);
-app.get("/", (req, res) => {
-    res.send("Welcome my the Express Server!");
-});
+// app.get("/", (req, res) => {
+//     res.send("Welcome my the Express Server!");
+// });
 // Catch-all handler for undefined routes
 app.all("*", (req, res, next) => {
     next(new AppError(`Cannot find ${req.originalUrl} on this server`, 404));
