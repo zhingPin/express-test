@@ -23,24 +23,26 @@ const ThreadSchema = new Schema({
     object: { type: String, required: true },
     initialMessage: { type: String, required: false, default: "" }, // Add this line
     run: {
-        id: { type: String, required: true },
-        status: {
-            type: String,
-            enum: [
-                "queued",
-                "in_progress",
-                "requires_action",
-                "cancelling",
-                "cancelled",
-                "failed",
-                "completed",
-                "incomplete",
-                "expired",
-                "new"
-            ],
-            required: true,
-        },
-        lastChecked: { type: Date, default: Date.now },
+        type: new Schema({
+            id: { type: String, required: true },
+            status: {
+                type: String,
+                enum: [
+                    "queued",
+                    "in_progress",
+                    "requires_action",
+                    "cancelling",
+                    "cancelled",
+                    "failed",
+                    "completed",
+                    "incomplete",
+                    "expired",
+                    "new"
+                ],
+                required: true,
+            },
+            lastChecked: { type: Date, default: Date.now },
+        }),
         required: true,
     },
 }, { timestamps: true });
