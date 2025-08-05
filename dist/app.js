@@ -23,36 +23,9 @@ const __dirname = path.dirname(__filename);
 const app = express();
 // ✅ FIX: Trust proxy (for rate limiting to work properly on Vercel)
 app.set("trust proxy", 1);
-// ✅ Allow frontend origin with explicit configuration for Vercel previews
-const allowedOrigins = [
-    // production URL
-    'http://wallet-connection-zeta.vercel.app',
-    // development URL
-    'http://localhost:3000', // Local development URL
-    // preview URL
-    'https://wallet-connection-gp1klid6i-zhingpins-projects.vercel.app', // Your specific frontend preview URL
-];
-// Regex to match any Vercel preview deployment URL
-const vercelPreviewRegex = /\.vercel\.app$/;
-app.use(cors({
-    origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin)
-            return callback(null, true);
-        // Check if the origin is in the allowed list or matches a Vercel preview domain
-        if (allowedOrigins.includes(origin) || vercelPreviewRegex.test(origin)) {
-            return callback(null, true);
-        }
-        else {
-            const msg = `The CORS policy for this site does not allow access from the specified Origin: ${origin}`;
-            return callback(new Error(msg), false);
-        }
-    },
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Specify allowed HTTP methods
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-vercel-protection-bypass'], // Specify allowed headers
-    credentials: true, // Allow cookies to be sent with requests if needed
-}));
-app.options("*", cors()); // Handle preflight OPTIONS requests for all routes
+// ✅ Allow frontend origin
+app.use(cors());
+app.options("*", cors());
 app.use(mongoSanitize()); // Prevent NoSQL injection attacks
 app.post("/submit", [body("input").trim().escape()], // Use an array for middleware
 (req, res) => {
@@ -84,6 +57,7 @@ app.use((req, res, next) => {
     next();
 });
 app.use(express.static(path.join(__dirname, "public")));
+// app.use(morgan("dev")); // Logging middleware
 // Development logging
 if (process.env.NODE_ENV === "development") {
     app.use(morgan("dev"));
@@ -95,6 +69,7 @@ app.use("/api/v1/assistants", assistantRouter);
 app.use("/api/v1/thread", threadRouter);
 app.use("/api/v1/message", messageRouter);
 app.use("/api/v1/chat", chatRouter);
+// app.use("/api/v1/health-check", healthCheckRouter);
 app.get("/", (req, res) => {
     res.send("Welcome my the Express Server!");
 });
